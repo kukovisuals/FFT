@@ -9,9 +9,9 @@ AudioInput  myA;
 FFT         aFFT;
 
 int         delFFT  = 11;
-int         aM      = 700;  
+int         aM      = 1000;  
 
-float       amp     = 40.0;
+float       amp     = 20.0;
 float       aI      = 0.2;
 float       aIa     = aI;
 float       aIStep  = 0.35;
@@ -31,11 +31,14 @@ float f   = 0.10008;  // Wave amplitude
 
 PVector v;
 
+PImage img;
+
 void setup() {
- //size(600, 760, P3D);
- fullScreen(P3D);
-  background(bgColor);
+ size(800, 760, P3D);
+ //fullScreen(P3D);
+  background(255);
   strokeWeight(5);
+  img = loadImage("star.png");
   cam = new PeasyCam(this,100);
 
   minim   = new Minim(this);
@@ -51,11 +54,11 @@ void setup() {
 
 void draw() {
  //background(bgColor);
-   fill(0,4);
+   fill(0,9);
    pushMatrix();
-   translate(29, 337, 200);
+   translate(-284, 201, 7);
    noStroke();
-   box(1400,1300,1300);
+   box(1683,1725,1543);
    popMatrix();
 
   strokeWeight(5);
@@ -63,40 +66,42 @@ void draw() {
   aFFT.forward(myA.mix);
   //translate(width/2, height/2);
   aDelData();
+  
+  pushMatrix();
+  rotateX(PI/2);
+  translate(-31,-64,0);
+  image(img,0,0,63,59);
+  popMatrix();
 }
 
 void aDelData() {
-  translate(0, height/2, 0);
+  translate(0, 0, 0);
 
   for (int i = 0; i < delFFT; ++i) {
 
     float partI = (aFFT.getAvg(i) * amp) * aIa;
     float tempIndexCon = constrain(partI, 0, aM);
 
-    for (float t = 0; t < 8 * TWO_PI; t += PI/60) {
+    for (float t = 0; t < 8 * TWO_PI; t += PI/6) {
         
       int r = 10; 
       PVector v = new PVector(r*t * cos(t+tt),r*t * sin(t+tt),r*t);
 
       PVector v1 = new PVector(r*t * cos(t+tt),r*t * sin(t+tt),r*t+partI);         
       
-      stroke(#F5C906);      
+      stroke(#0bc33f);      
       point(v.x, v.y, v.z);
 
-      stroke(#049BC2);
+      stroke(#f89292);
       point(v1.x, v1.y, v1.z);
 
-       tt += 0.00001;   
-    //  println(v.x,v.y,v.z);
+       tt += 0.000007;   
      }
-
     aData[i] = tempIndexCon;
     aIa += aIStep;
 
   }
   aIa = aI;
-
-  //println(aData, t);
 }
 
 void stop() {
@@ -104,8 +109,6 @@ void stop() {
   minim.stop();  
   super.stop();
 }
-
-
 
 /*
 delFFT = myAudioRange , aM = audioMax , partI = audioIndexAverage
