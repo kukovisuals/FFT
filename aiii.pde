@@ -8,10 +8,10 @@ Minim       minim;
 AudioInput  myA;
 FFT         aFFT;
 
-int         delFFT  = 11;
-int         aM      = 1000;  
+int         delFFT  = 12;
+int         aM      = 10;  
 
-float       amp     = 20.0;
+float       amp     = 170.0;
 float       aI      = 0.2;
 float       aIa     = aI;
 float       aIStep  = 0.35;
@@ -30,14 +30,16 @@ float y;
 float f   = 0.10008;  // Wave amplitude
 
 PVector v;
-
+PVector v1;
 PImage img;
 
 void setup() {
- size(800, 760, P3D);
- //fullScreen(P3D);
-  background(255);
-  strokeWeight(5);
+ //size(900, 760, P3D);
+ fullScreen(P3D);
+  background(0);
+  strokeWeight(15);
+  
+  noCursor();
   img = loadImage("star.png");
   cam = new PeasyCam(this,100);
 
@@ -48,30 +50,49 @@ void setup() {
 
   aFFT = new FFT(myA.bufferSize(), myA.sampleRate());
   aFFT.linAverages(delFFT);
-  //aFFT.window(FFT.GAUSS);
+  aFFT.window(FFT.GAUSS);
 
 }
 
 void draw() {
  //background(bgColor);
-   fill(0,9);
+   fill(0,6);
    pushMatrix();
    translate(-284, 201, 7);
    noStroke();
    box(1683,1725,1543);
    popMatrix();
 
-  strokeWeight(5);
-  
   aFFT.forward(myA.mix);
   //translate(width/2, height/2);
   aDelData();
   
+  noStroke();
   pushMatrix();
-  rotateX(PI/2);
-  translate(-31,-64,0);
-  image(img,0,0,63,59);
+  rotateZ(tt);
+  translate(0,0,-20);
+  fill(255);
+  beginShape();
+  
+  vertex(-20 ,0, 0  );
+  vertex(-5  ,0, -5  );
+  vertex(0   ,0, -20);
+  vertex(5   ,0, -5 );
+  vertex(20  ,0, 0  );
+  vertex(5   ,0, 5  );
+  vertex(0   ,0, 20 );
+  vertex(-5  ,0, 5  );
+  vertex(-5 ,0, 5  );
+  //vertex(-5   ,0, -5);
+  
+  
+  endShape(CLOSE);
   popMatrix();
+  //pushMatrix();
+  //rotateX(PI/2);
+  //translate(-31,-64,0);
+  //image(img,0,0,63,59);
+  //popMatrix();
 }
 
 void aDelData() {
@@ -82,26 +103,38 @@ void aDelData() {
     float partI = (aFFT.getAvg(i) * amp) * aIa;
     float tempIndexCon = constrain(partI, 0, aM);
 
-    for (float t = 0; t < 8 * TWO_PI; t += PI/6) {
+    for (float t = 0; t < 9 * TWO_PI; t += PI/11) {
         
       int r = 10; 
-      PVector v = new PVector(r*t * cos(t+tt),r*t * sin(t+tt),r*t);
+      v = new PVector(r*t * cos(t+tt),r*t * sin(t+tt),r*t);
 
-      PVector v1 = new PVector(r*t * cos(t+tt),r*t * sin(t+tt),r*t+partI);         
+      v1 = new PVector(r*t * cos(t+tt),r*t * sin(t+tt),r*t+partI);         
       
-      stroke(#0bc33f);      
+      stroke(#f5f7f6);   
+      strokeWeight(5);
       point(v.x, v.y, v.z);
-
-      stroke(#f89292);
+        
+      strokeWeight(2);
+      stroke(#3ed4ff);
       point(v1.x, v1.y, v1.z);
 
-       tt += 0.000007;   
-     }
+      tt += 0.000007;
+       
+     
     aData[i] = tempIndexCon;
     aIa += aIStep;
-
+    if ( tt == 128 ){
+        tt = 0; 
+      }
   }
+ 
   aIa = aI;
+  println(tt);
+}
+
+  
+  
+  
 }
 
 void stop() {
