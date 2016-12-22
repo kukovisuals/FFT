@@ -40,7 +40,6 @@ void setup() {
   strokeWeight(15);
   
   noCursor();
-  img = loadImage("star.png");
   cam = new PeasyCam(this,100);
 
   minim   = new Minim(this);
@@ -85,14 +84,8 @@ void draw() {
   vertex(-5 ,0, 5  );
   //vertex(-5   ,0, -5);
   
-  
   endShape(CLOSE);
   popMatrix();
-  //pushMatrix();
-  //rotateX(PI/2);
-  //translate(-31,-64,0);
-  //image(img,0,0,63,59);
-  //popMatrix();
 }
 
 void aDelData() {
@@ -106,8 +99,8 @@ void aDelData() {
     for (float t = 0; t < 9 * TWO_PI; t += PI/11) {
         
       int r = 10; 
+      
       v = new PVector(r*t * cos(t+tt),r*t * sin(t+tt),r*t);
-
       v1 = new PVector(r*t * cos(t+tt),r*t * sin(t+tt),r*t+partI);         
       
       stroke(#f5f7f6);   
@@ -119,22 +112,17 @@ void aDelData() {
       point(v1.x, v1.y, v1.z);
 
       tt += 0.000007;
-       
      
-    aData[i] = tempIndexCon;
-    aIa += aIStep;
-    if ( tt == 128 ){
+      aData[i] = tempIndexCon;
+      aIa += aIStep;
+    
+      if ( tt == 128 ){
         tt = 0; 
       }
+    }
+    aIa = aI;
+    println(tt);
   }
- 
-  aIa = aI;
-  println(tt);
-}
-
-  
-  
-  
 }
 
 void stop() {
